@@ -24,61 +24,7 @@ function saveDB() {
   } catch(e) { showToast('저장 실패: 저장 공간 부족'); }
 }
 
-// ── 샘플 데이터 ────────────────────────────────
-function seedSampleData() {
-  if (db.bids.length > 0) return;
 
-  const companies = ['(주)한국기록관리', '(주)아카이브솔루션', '(주)기록과정보', '(재)한국정보화진흥원', '(주)디지털아카이브'];
-  const projects = [
-    '국가기록원 기록물 DB구축 용역',
-    '서울시 행정문서 전자화 사업',
-    '국방부 비밀기록 관리시스템 구축',
-    '교육부 학적정보 DB구축 사업',
-    '보건복지부 의료기록 전산화',
-    '행정안전부 공공기록물 관리용역',
-    '문화재청 문화유산 아카이브 구축',
-    '법무부 법인등기 전자화 사업',
-    '외교부 외교문서 DB구축',
-    '기획재정부 예산문서 디지털화',
-    '산업통상자원부 산업데이터 구축',
-    '과학기술정보통신부 연구기록 관리'
-  ];
-
-  const sampleBids = [
-    { project: projects[0], year: 2024, month: 3, bidPrice: 285000000, rank: 1, result: 'win', client: '국가기록원', category: '기록물DB', competitors: [{ name: companies[1], price: 310000000 }, { name: companies[2], price: 298000000 }], note: '가격경쟁력으로 낙찰' },
-    { project: projects[1], year: 2024, month: 5, bidPrice: 142000000, rank: 2, result: 'lose', client: '서울시청', category: '전자화', competitors: [{ name: companies[0], price: 128000000 }, { name: companies[3], price: 155000000 }], note: '가격 경쟁에서 패배' },
-    { project: projects[2], year: 2024, month: 7, bidPrice: 520000000, rank: 1, result: 'win', client: '국방부', category: '기록물DB', competitors: [{ name: companies[4], price: 545000000 }, { name: companies[2], price: 538000000 }], note: '기술점수 우위' },
-    { project: projects[3], year: 2023, month: 9, bidPrice: 98000000, rank: 3, result: 'lose', client: '교육부', category: '전자화', competitors: [{ name: companies[1], price: 87000000 }, { name: companies[0], price: 92000000 }], note: '' },
-    { project: projects[4], year: 2023, month: 11, bidPrice: 215000000, rank: 1, result: 'win', client: '보건복지부', category: '기록물DB', competitors: [{ name: companies[2], price: 232000000 }, { name: companies[4], price: 228000000 }], note: '2년 연속 수주' },
-    { project: projects[5], year: 2023, month: 4, bidPrice: 175000000, rank: 2, result: 'lose', client: '행정안전부', category: '관리시스템', competitors: [{ name: companies[0], price: 162000000 }, { name: companies[1], price: 185000000 }], note: '' },
-    { project: projects[6], year: 2024, month: 2, bidPrice: 88000000, rank: 1, result: 'win', client: '문화재청', category: '아카이브', competitors: [{ name: companies[3], price: 95000000 }], note: '단독 경쟁' },
-    { project: projects[7], year: 2024, month: 8, bidPrice: 335000000, rank: 2, result: 'lose', client: '법무부', category: '전자화', competitors: [{ name: companies[0], price: 312000000 }, { name: companies[4], price: 352000000 }], note: '예산 초과로 탈락' },
-    { project: projects[8], year: 2022, month: 6, bidPrice: 195000000, rank: 1, result: 'win', client: '외교부', category: '기록물DB', competitors: [{ name: companies[2], price: 208000000 }], note: '' },
-    { project: projects[9], year: 2022, month: 3, bidPrice: 68000000, rank: 1, result: 'win', client: '기획재정부', category: '전자화', competitors: [{ name: companies[1], price: 74000000 }, { name: companies[3], price: 79000000 }], note: '' },
-    { project: projects[10], year: 2023, month: 8, bidPrice: 158000000, rank: 2, result: 'lose', client: '산업부', category: '기록물DB', competitors: [{ name: companies[0], price: 145000000 }], note: '가격 경쟁' },
-    { project: projects[11], year: 2024, month: 10, bidPrice: 420000000, rank: 1, result: 'win', client: '과기부', category: '관리시스템', competitors: [{ name: companies[2], price: 445000000 }, { name: companies[4], price: 432000000 }], note: '최대 규모 프로젝트' },
-  ];
-
-  sampleBids.forEach(b => {
-    b.id = db.nextId++;
-    b.createdAt = new Date().toISOString();
-    db.bids.push(b);
-  });
-
-  const sampleCompetitors = [
-    { name: companies[0], note: '국내 최대 기록관리 업체, 공격적 저가 입찰 전략', bids: 8, wins: 5 },
-    { name: companies[1], note: '기술력 우수, 가격은 중간 수준', bids: 6, wins: 2 },
-    { name: companies[2], note: '주로 중소형 사업 집중, 낮은 가격 경쟁력', bids: 7, wins: 1 },
-    { name: companies[3], note: '공공기관 산하, 안정적 수주 능력', bids: 4, wins: 2 },
-    { name: companies[4], note: '신흥 업체, 기술력 강점, 가격 높음', bids: 5, wins: 1 },
-  ];
-  sampleCompetitors.forEach(c => {
-    c.id = db.nextId++;
-    db.competitors.push(c);
-  });
-
-  saveDB();
-}
 
 // ── 페이지 라우팅 ───────────────────────────────
 let currentPage = 'dashboard';
@@ -144,6 +90,37 @@ function renderDashboard() {
   const avgPrice = bids.length ? Math.round(bids.reduce((s, b) => s + Number(b.bidPrice || 0), 0) / bids.length) : 0;
 
   const el = document.getElementById('page-dashboard');
+
+  if (bids.length === 0) {
+    el.innerHTML = `
+      <div class="page-header">
+        <div class="page-title">대시보드</div>
+        <div class="page-sub">입찰 현황 종합 요약</div>
+      </div>
+      <div class="page-content">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;text-align:center;">
+          <div style="width:72px;height:72px;background:var(--blue-light);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect x="4" y="4" width="28" height="28" rx="5" stroke="#4F7BF7" stroke-width="2"/>
+              <line x1="10" y1="13" x2="26" y2="13" stroke="#4F7BF7" stroke-width="2" stroke-linecap="round"/>
+              <line x1="10" y1="19" x2="20" y2="19" stroke="#4F7BF7" stroke-width="2" stroke-linecap="round"/>
+              <line x1="10" y1="25" x2="23" y2="25" stroke="#4F7BF7" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="font-size:20px;font-weight:700;color:var(--gray-900);margin-bottom:10px;">아직 등록된 입찰 데이터가 없습니다</div>
+          <div style="font-size:14px;color:var(--gray-400);line-height:1.8;margin-bottom:32px;">
+            첫 번째 입찰 결과를 등록하면<br>대시보드에 통계와 차트가 자동으로 표시됩니다.
+          </div>
+          <button class="btn btn-primary" onclick="showPage('add')" style="padding:12px 28px;font-size:15px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            첫 입찰 등록하기
+          </button>
+        </div>
+      </div>
+    \`;
+    return;
+  }
+
   el.innerHTML = `
     <div class="page-header">
       <div class="page-title">대시보드</div>
@@ -1045,5 +1022,4 @@ function toggleSidebar() {
 
 // ── 초기화 ────────────────────────────────────
 loadDB();
-seedSampleData();
 renderPage('dashboard');
